@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Layouts, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls, FMX.TabControl;
+  FMX.Layouts, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls, FMX.TabControl,
+  System.Actions, FMX.ActnList;
 
 type
   TfrmLogin = class(TForm)
@@ -40,7 +41,6 @@ type
     edtAccountName: TEdit;
     tabFoto: TTabItem;
     lyFoto: TLayout;
-    imgFotoEdit: TImage;
     lyBtnCreateAccount: TLayout;
     roundRectBtnCreateAccount: TRoundRect;
     Label2: TLabel;
@@ -51,9 +51,31 @@ type
     imgLibrary: TImage;
     Layout1: TLayout;
     Layout2: TLayout;
-    Image2: TImage;
+    imgBackCreateAccount: TImage;
     Layout3: TLayout;
-    Image3: TImage;
+    imgBackFoto: TImage;
+    lyLoginFooter: TLayout;
+    lyLoginFooterCenter: TLayout;
+    lblBtnLogin: TLabel;
+    lblBtnLoginCriarConta: TLabel;
+    ActionList: TActionList;
+    ActLogin: TChangeTabAction;
+    ActCreateAccount: TChangeTabAction;
+    ActFoto: TChangeTabAction;
+    ActSelectFoto: TChangeTabAction;
+    lyCreateAccountFooter: TLayout;
+    lyCreateAccountFooterCenter: TLayout;
+    lblBtnCreateAccountLogin: TLabel;
+    lblBtnCreateAccount: TLabel;
+    rectPageSelectCreateAccount: TRectangle;
+    rectPageSelectLogin: TRectangle;
+    circleSelectFoto: TCircle;
+    procedure lblBtnLoginCriarContaClick(Sender: TObject);
+    procedure lblBtnCreateAccountLoginClick(Sender: TObject);
+    procedure roundRectAccountBtnNextClick(Sender: TObject);
+    procedure imgBackCreateAccountClick(Sender: TObject);
+    procedure imgBackFotoClick(Sender: TObject);
+    procedure circleSelectFotoClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -66,5 +88,35 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TfrmLogin.circleSelectFotoClick(Sender: TObject);
+begin
+  ActSelectFoto.Execute;
+end;
+
+procedure TfrmLogin.imgBackCreateAccountClick(Sender: TObject);
+begin
+  ActCreateAccount.Execute;
+end;
+
+procedure TfrmLogin.imgBackFotoClick(Sender: TObject);
+begin
+  ActFoto.Execute;
+end;
+
+procedure TfrmLogin.lblBtnCreateAccountLoginClick(Sender: TObject);
+begin
+  ActLogin.Execute;
+end;
+
+procedure TfrmLogin.lblBtnLoginCriarContaClick(Sender: TObject);
+begin
+  ActCreateAccount.Execute;
+end;
+
+procedure TfrmLogin.roundRectAccountBtnNextClick(Sender: TObject);
+begin
+  ActFoto.Execute;
+end;
 
 end.
