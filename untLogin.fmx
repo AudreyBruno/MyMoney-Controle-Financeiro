@@ -9230,6 +9230,9 @@ object frmLogin: TfrmLogin
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   DesignerMasterStyle = 0
   object tabCtrlLogin: TTabControl
     Align = Contents
@@ -10890,6 +10893,7 @@ object frmLogin: TfrmLogin
             Size.Width = 115.000000000000000000
             Size.Height = 115.000000000000000000
             Size.PlatformDefault = False
+            OnClick = imgLibraryClick
           end
           object imgFoto: TImage
             MultiResBitmap.Height = 324
@@ -11165,6 +11169,7 @@ object frmLogin: TfrmLogin
             Size.Width = 115.000000000000000000
             Size.Height = 115.000000000000000000
             Size.PlatformDefault = False
+            OnClick = imgFotoClick
           end
         end
       end
@@ -11619,6 +11624,14 @@ object frmLogin: TfrmLogin
     object ActSelectFoto: TChangeTabAction
       Category = 'Tab'
       Tab = tabSelectFoto
+    end
+    object ActLibrary: TTakePhotoFromLibraryAction
+      Category = 'Media Library'
+      OnDidFinishTaking = ActLibraryDidFinishTaking
+    end
+    object ActCamera: TTakePhotoFromCameraAction
+      Category = 'Media Library'
+      OnDidFinishTaking = ActCameraDidFinishTaking
     end
   end
 end
