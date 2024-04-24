@@ -7,6 +7,11 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Layouts, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls, FMX.TabControl,
   System.Actions, FMX.ActnList, u99Permissions, FMX.MediaLibrary.Actions,
+
+  {$IFDEF ANDROID}
+    FMX.VirtualKeyboard, FMX.Platform,
+  {$ENDIF}
+
   FMX.StdActns;
 
 type
@@ -86,6 +91,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure ActLibraryDidFinishTaking(Image: TBitmap);
     procedure ActCameraDidFinishTaking(Image: TBitmap);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+      Shift: TShiftState);
   private
     { Private declarations }
     permission: T99Permissions;
@@ -131,6 +138,46 @@ end;
 procedure TfrmLogin.FormDestroy(Sender: TObject);
 begin
   permission.DisposeOf;
+end;
+
+procedure TfrmLogin.FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+{$IFDEF ANDROID}
+var
+  FService : IFMXVirtualKeyboardService;
+{$ENDIF}
+begin
+  {$IFDEF ANDROID}
+    if (Key = vkHardwareBack) then
+      begin
+        TPlatformServices.Current.SupportsPlatformService(IFMXVirtualKeyboardService,
+                                                          IInterface(FService));
+
+        if (FService <> nil) and (TVirtualKeyboardState.Visible in FService.VirtualKeyBoardState) then
+          begin
+            // Botao back pressionado e teclado visivel...
+            // (apenas fecha o teclado)
+          end
+        else
+          begin
+            if tabCtrlLogin.ActiveTab = tabCreateAccount then
+              begin
+                Key := 0;
+                ActLogin.Execute
+              end
+            else if tabCtrlLogin.ActiveTab = TabFoto then
+              begin
+                Key := 0;
+                ActCreateAccount.Execute
+              end
+            else if tabCtrlLogin.ActiveTab = tabSelectFoto then
+              begin
+                Key := 0;
+                ActFoto.Execute;
+              end;
+          end;
+      end;
+  {$ENDIF}
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);
