@@ -9231,6 +9231,7 @@ object frmLogin: TfrmLogin
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
+  OnClose = FormClose
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   OnShow = FormShow
@@ -9502,6 +9503,7 @@ object frmLogin: TfrmLogin
             Size.Height = 40.000000000000000000
             Size.PlatformDefault = False
             Stroke.Kind = None
+            OnClick = roundRectBtnLoginClick
             object lblLogin: TLabel
               Align = Client
               StyledSettings = [Family, Style]

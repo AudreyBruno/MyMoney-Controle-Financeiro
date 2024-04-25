@@ -4,7 +4,8 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   untLogin in 'untLogin.pas' {frmLogin},
-  u99Permissions in 'Units\u99Permissions.pas';
+  u99Permissions in 'Units\u99Permissions.pas',
+  untPrincipal in 'untPrincipal.pas' {frmPrincipal};
 
 {$R *.res}
 

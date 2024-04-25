@@ -12,7 +12,7 @@ uses
     FMX.VirtualKeyboard, FMX.Platform,
   {$ENDIF}
 
-  FMX.StdActns;
+  FMX.StdActns, untPrincipal;
 
 type
   TfrmLogin = class(TForm)
@@ -93,6 +93,8 @@ type
     procedure ActCameraDidFinishTaking(Image: TBitmap);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
+    procedure roundRectBtnLoginClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     permission: T99Permissions;
@@ -128,6 +130,12 @@ end;
 procedure TfrmLogin.circleSelectFotoClick(Sender: TObject);
 begin
   ActSelectFoto.Execute;
+end;
+
+procedure TfrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := TCloseAction.caFree;
+  frmLogin := nil;
 end;
 
 procedure TfrmLogin.FormCreate(Sender: TObject);
@@ -218,6 +226,16 @@ end;
 procedure TfrmLogin.roundRectAccountBtnNextClick(Sender: TObject);
 begin
   ActFoto.Execute;
+end;
+
+procedure TfrmLogin.roundRectBtnLoginClick(Sender: TObject);
+begin
+  if NOT Assigned(frmPrincipal) then
+    Application.CreateForm(TfrmPrincipal, frmPrincipal);
+
+  Application.MainForm := frmPrincipal;
+  frmPrincipal.Show;
+  Close;
 end;
 
 end.
