@@ -34,7 +34,7 @@ type
     Layout8: TLayout;
     Label8: TLabel;
     Label9: TLabel;
-    ListView1: TListView;
+    lvLancamentos: TListView;
   private
     { Private declarations }
   public
