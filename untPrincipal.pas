@@ -35,7 +35,13 @@ type
     Label8: TLabel;
     Label9: TLabel;
     lvLancamentos: TListView;
+    imgCategoria: TImage;
+    procedure FormShow(Sender: TObject);
   private
+    procedure AddLancamentosLv(id_lancamento: Integer;
+                                         descricao, categoria: string;
+                                         valor: double; foto: TStream;
+                                         dt: TDateTime);
     { Private declarations }
   public
     { Public declarations }
@@ -47,5 +53,59 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TfrmPrincipal.AddLancamentosLv(id_lancamento: Integer;
+                                         descricao, categoria: string;
+                                         valor: double; foto: TStream;
+                                         dt: TDateTime);
+var
+  txt: TListItemText;
+  img: TListItemImage;
+  bmp : TBitmap;
+begin
+  with lvLancamentos.Items.Add do
+    begin
+      Height := 55;
+      Tag := id_lancamento;
+
+      txt := TListItemText(Objects.FindDrawable('txtDescricao'));
+      txt.Text := descricao;
+
+      txt := TListItemText(Objects.FindDrawable('txtCategoria'));
+      txt.Text := categoria;
+
+      txt := TListItemText(Objects.FindDrawable('txtData'));
+      txt.Text := FormatDateTime('dd/mm', dt);
+
+      txt := TListItemText(Objects.FindDrawable('txtValor'));
+      txt.Text := FormatFloat('#,##0.00', valor);
+
+      img := TListItemImage(Objects.FindDrawable('imgIcon'));
+
+      if foto <> nil then
+        begin
+          bmp := TBitmap.Create;
+          bmp.LoadFromStream(foto);
+
+          img.OwnsBitmap := true;
+          img.Bitmap := bmp;
+        end;
+    end;
+end;
+
+procedure TfrmPrincipal.FormShow(Sender: TObject);
+var
+  foto: TStream;
+  i: Integer;
+begin
+  foto := TMemoryStream.Create;
+  imgCategoria.Bitmap.SaveToStream(foto);
+  foto.Position := 0;
+
+  for i := 1 to 10 do
+    AddLancamentosLv(1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
+
+  foto.DisposeOf;
+end;
 
 end.
