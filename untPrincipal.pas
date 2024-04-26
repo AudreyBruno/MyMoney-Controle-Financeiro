@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Layouts, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  untLancamentos;
+  untLancamentos, untCategorias;
 
 type
   TfrmPrincipal = class(TForm)
@@ -44,6 +44,7 @@ type
     procedure lvLancamentosPaint(Sender: TObject; Canvas: TCanvas;
       const ARect: TRectF);
     procedure lblTodosLancamentosClick(Sender: TObject);
+    procedure imgMenuClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -52,6 +53,10 @@ type
                                          descricao, categoria: string;
                                          valor: double; foto: TStream;
                                          dt: TDateTime);
+    procedure AddCategoriaLv(listview: TListView;
+                                       id_categoria: Integer;
+                                       descricao: string;
+                                       foto: TStream);
     { Public declarations }
   end;
 
@@ -102,6 +107,36 @@ begin
     end;
 end;
 
+procedure TfrmPrincipal.AddCategoriaLv(listview: TListView;
+                                       id_categoria: Integer;
+                                       descricao: string;
+                                       foto: TStream);
+var
+  txt: TListItemText;
+  img: TListItemImage;
+  bmp : TBitmap;
+begin
+  with listview.Items.Add do
+    begin
+      Height := 55;
+      Tag := id_categoria;
+
+      txt := TListItemText(Objects.FindDrawable('txtDescricao'));
+      txt.Text := descricao;
+
+      img := TListItemImage(Objects.FindDrawable('imgIcon'));
+
+      if foto <> nil then
+        begin
+          bmp := TBitmap.Create;
+          bmp.LoadFromStream(foto);
+
+          img.OwnsBitmap := true;
+          img.Bitmap := bmp;
+        end;
+    end;
+end;
+
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 var
   foto: TStream;
@@ -115,6 +150,14 @@ begin
     AddLancamentosLv(frmPrincipal.lvLancamentos, 1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
 
   foto.DisposeOf;
+end;
+
+procedure TfrmPrincipal.imgMenuClick(Sender: TObject);
+begin
+  if NOT Assigned(frmCategorias) then
+    Application.CreateForm(TfrmCategorias, frmCategorias);
+
+  frmCategorias.Show;
 end;
 
 procedure TfrmPrincipal.lblTodosLancamentosClick(Sender: TObject);
@@ -131,10 +174,10 @@ var
   foto: TStream;
   i: Integer;
 begin
-  if lvLancamentos.Items.Count > 0 then
+  {if lvLancamentos.Items.Count > 0 then
     if lvLancamentos.GetItemRect(lvLancamentos.Items.Count - 4).Bottom <= lvLancamentos.Height then
       for i := 1 to 10 do
-        AddLancamentosLv(frmPrincipal.lvLancamentos, 1, 'Compra' + IntToStr(i), 'Transporte', -50000.59, foto, Date);
+        AddLancamentosLv(frmPrincipal.lvLancamentos, 1, 'Compra' + IntToStr(i), 'Transporte', -50000.59, foto, Date); }
 end;
 
 procedure TfrmPrincipal.lvLancamentosUpdateObjects(const Sender: TObject;

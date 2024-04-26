@@ -7,7 +7,9 @@ uses
   u99Permissions in 'Units\u99Permissions.pas',
   untPrincipal in 'untPrincipal.pas' {frmPrincipal},
   untLancamentos in 'untLancamentos.pas' {frmLancamentos},
-  untLancamentosCad in 'untLancamentosCad.pas' {frmLancamentosCad};
+  untLancamentosCad in 'untLancamentosCad.pas' {frmLancamentosCad},
+  untCategorias in 'untCategorias.pas' {frmCategorias},
+  untCategoriasCad in 'untCategoriasCad.pas' {frmCategoriaCad};
 
 {$R *.res}
 
