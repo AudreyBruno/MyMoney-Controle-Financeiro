@@ -5,7 +5,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Android64</Platform>
         <TargetedPlatforms>37915</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>MyMoney.dpr</MainSource>
@@ -286,6 +286,10 @@
         </DCCReference>
         <DCCReference Include="untLancamentos.pas">
             <Form>frmLancamentos</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="untLancamentosCad.pas">
+            <Form>frmLancamentosCad</Form>
             <FormType>fmx</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

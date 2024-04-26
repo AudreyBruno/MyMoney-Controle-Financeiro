@@ -10,7 +10,7 @@ object frmLancamentos: TfrmLancamentos
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnShow = FormShow
-  DesignerMasterStyle = 0
+  DesignerMasterStyle = 3
   object Layout1: TLayout
     Align = Top
     Size.Width = 350.000000000000000000
@@ -315,14 +315,14 @@ object frmLancamentos: TfrmLancamentos
     Align = Bottom
     Corners = [TopLeft, TopRight]
     Fill.Color = xFF5769DF
-    Position.Y = 450.000000000000000000
+    Position.Y = 475.000000000000000000
     Size.Width = 350.000000000000000000
-    Size.Height = 100.000000000000000000
+    Size.Height = 75.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
     XRadius = 26.000000000000000000
     YRadius = 26.000000000000000000
-    object Image1: TImage
+    object imgAdd: TImage
       MultiResBitmap.Height = 64
       MultiResBitmap.Width = 64
       MultiResBitmap = <
@@ -366,20 +366,21 @@ object frmLancamentos: TfrmLancamentos
       Margins.Left = 15.000000000000000000
       Position.X = 15.000000000000000000
       Size.Width = 50.000000000000000000
-      Size.Height = 100.000000000000000000
+      Size.Height = 75.000000000000000000
       Size.PlatformDefault = False
+      OnClick = imgAddClick
     end
     object Layout3: TLayout
       Align = Right
       Position.X = 65.000000000000000000
       Size.Width = 285.000000000000000000
-      Size.Height = 100.000000000000000000
+      Size.Height = 75.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object Label4: TLabel
         StyledSettings = [Family]
         Position.X = 15.000000000000000000
-        Position.Y = 30.000000000000000000
+        Position.Y = 20.000000000000000000
         Size.Width = 75.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
@@ -393,7 +394,7 @@ object frmLancamentos: TfrmLancamentos
         StyledSettings = [Family, Style]
         Opacity = 0.400000005960464500
         Position.X = 15.000000000000000000
-        Position.Y = 50.000000000000000000
+        Position.Y = 40.000000000000000000
         Size.Width = 75.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -405,7 +406,7 @@ object frmLancamentos: TfrmLancamentos
       object Label2: TLabel
         StyledSettings = [Family]
         Position.X = 105.000000000000000000
-        Position.Y = 30.000000000000000000
+        Position.Y = 20.000000000000000000
         Size.Width = 75.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
@@ -419,7 +420,7 @@ object frmLancamentos: TfrmLancamentos
         StyledSettings = [Family, Style]
         Opacity = 0.400000005960464500
         Position.X = 105.000000000000000000
-        Position.Y = 50.000000000000000000
+        Position.Y = 40.000000000000000000
         Size.Width = 75.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -431,7 +432,7 @@ object frmLancamentos: TfrmLancamentos
       object Label6: TLabel
         StyledSettings = [Family]
         Position.X = 195.000000000000000000
-        Position.Y = 30.000000000000000000
+        Position.Y = 20.000000000000000000
         Size.Width = 75.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
@@ -445,7 +446,7 @@ object frmLancamentos: TfrmLancamentos
         StyledSettings = [Family, Style]
         Opacity = 0.400000005960464500
         Position.X = 195.000000000000000000
-        Position.Y = 50.000000000000000000
+        Position.Y = 40.000000000000000000
         Size.Width = 75.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -464,7 +465,7 @@ object frmLancamentos: TfrmLancamentos
     OnUpdateObjects = lvLancamentosUpdateObjects
     Align = Client
     Size.Width = 350.000000000000000000
-    Size.Height = 360.000000000000000000
+    Size.Height = 385.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 2
     ItemAppearance.ItemHeight = 55
@@ -527,5 +528,6 @@ object frmLancamentos: TfrmLancamentos
         AppearanceObjectName = 'Text1'
         AppearanceClassName = 'TTextObjectAppearance'
       end>
+    OnItemClick = lvLancamentosItemClick
   end
 end

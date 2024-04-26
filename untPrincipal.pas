@@ -37,6 +37,7 @@ type
     lblTodosLancamentos: TLabel;
     lvLancamentos: TListView;
     imgCategoria: TImage;
+    StyleBook: TStyleBook;
     procedure FormShow(Sender: TObject);
     procedure lvLancamentosUpdateObjects(const Sender: TObject;
       const AItem: TListViewItem);

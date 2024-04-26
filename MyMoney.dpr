@@ -6,7 +6,8 @@ uses
   untLogin in 'untLogin.pas' {frmLogin},
   u99Permissions in 'Units\u99Permissions.pas',
   untPrincipal in 'untPrincipal.pas' {frmPrincipal},
-  untLancamentos in 'untLancamentos.pas' {frmLancamentos};
+  untLancamentos in 'untLancamentos.pas' {frmLancamentos},
+  untLancamentosCad in 'untLancamentosCad.pas' {frmLancamentosCad};
 
 {$R *.res}
 

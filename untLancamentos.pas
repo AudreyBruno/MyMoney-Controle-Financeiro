@@ -19,7 +19,7 @@ type
     RoundRect1: TRoundRect;
     lblMes: TLabel;
     Rectangle1: TRectangle;
-    Image1: TImage;
+    imgAdd: TImage;
     Layout3: TLayout;
     Label4: TLabel;
     Label5: TLabel;
@@ -32,7 +32,11 @@ type
     procedure FormShow(Sender: TObject);
     procedure lvLancamentosUpdateObjects(const Sender: TObject;
       const AItem: TListViewItem);
+    procedure lvLancamentosItemClick(const Sender: TObject;
+      const AItem: TListViewItem);
+    procedure imgAddClick(Sender: TObject);
   private
+    procedure EditarLançamentos(id: integer);
     { Private declarations }
   public
     { Public declarations }
@@ -43,9 +47,17 @@ var
 
 implementation
 
-uses untPrincipal;
+uses untPrincipal, untLancamentosCad;
 
 {$R *.fmx}
+
+procedure TfrmLancamentos.EditarLançamentos(id: integer);
+begin
+  if NOT Assigned(frmLancamentosCad) then
+    Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
+
+  frmLancamentosCad.Show;
+end;
 
 procedure TfrmLancamentos.FormShow(Sender: TObject);
 
@@ -63,9 +75,20 @@ begin
   foto.DisposeOf;
 end;
 
+procedure TfrmLancamentos.imgAddClick(Sender: TObject);
+begin
+  EditarLançamentos(0);
+end;
+
 procedure TfrmLancamentos.imgBackClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmLancamentos.lvLancamentosItemClick(const Sender: TObject;
+  const AItem: TListViewItem);
+begin
+  EditarLançamentos(AItem.Tag);
 end;
 
 procedure TfrmLancamentos.lvLancamentosUpdateObjects(const Sender: TObject;
