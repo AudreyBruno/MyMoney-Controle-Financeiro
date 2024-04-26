@@ -37,6 +37,10 @@ type
     lvLancamentos: TListView;
     imgCategoria: TImage;
     procedure FormShow(Sender: TObject);
+    procedure lvLancamentosUpdateObjects(const Sender: TObject;
+      const AItem: TListViewItem);
+    procedure lvLancamentosPaint(Sender: TObject; Canvas: TCanvas;
+      const ARect: TRectF);
   private
     procedure AddLancamentosLv(id_lancamento: Integer;
                                          descricao, categoria: string;
@@ -106,6 +110,27 @@ begin
     AddLancamentosLv(1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
 
   foto.DisposeOf;
+end;
+
+procedure TfrmPrincipal.lvLancamentosPaint(Sender: TObject; Canvas: TCanvas;
+  const ARect: TRectF);
+var
+  foto: TStream;
+  i: Integer;
+begin
+  if lvLancamentos.Items.Count > 0 then
+    if lvLancamentos.GetItemRect(lvLancamentos.Items.Count - 4).Bottom <= lvLancamentos.Height then
+      for i := 1 to 10 do
+        AddLancamentosLv(1, 'Compra' + IntToStr(i), 'Transporte', -50000.59, foto, Date);
+end;
+
+procedure TfrmPrincipal.lvLancamentosUpdateObjects(const Sender: TObject;
+  const AItem: TListViewItem);
+var
+  txt: TListItemText;
+begin
+  txt := TListItemText(AItem.Objects.FindDrawable('txtDescricao'));
+  txt.Width := lvLancamentos.Width - txt.PlaceOffset.X - 110;
 end;
 
 end.
