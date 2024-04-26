@@ -9,12 +9,14 @@ uses
   untLancamentos in 'untLancamentos.pas' {frmLancamentos},
   untLancamentosCad in 'untLancamentosCad.pas' {frmLancamentosCad},
   untCategorias in 'untCategorias.pas' {frmCategorias},
-  untCategoriasCad in 'untCategoriasCad.pas' {frmCategoriaCad};
+  untCategoriasCad in 'untCategoriasCad.pas' {frmCategoriaCad},
+  DataModule.Principal in 'DataModules\DataModule.Principal.pas' {DMPrincipal: TDataModule};
 
 {$R *.res}
 
 begin
   Application.Initialize;
+  Application.CreateForm(TDMPrincipal, DMPrincipal);
   Application.CreateForm(TfrmLogin, frmLogin);
   Application.Run;
 end.

@@ -5,7 +5,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Android64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>37915</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>MyMoney.dpr</MainSource>
@@ -299,6 +299,11 @@
         <DCCReference Include="untCategoriasCad.pas">
             <Form>frmCategoriaCad</Form>
             <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="DataModules\DataModule.Principal.pas">
+            <Form>DMPrincipal</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
