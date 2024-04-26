@@ -5,7 +5,8 @@ uses
   FMX.Forms,
   untLogin in 'untLogin.pas' {frmLogin},
   u99Permissions in 'Units\u99Permissions.pas',
-  untPrincipal in 'untPrincipal.pas' {frmPrincipal};
+  untPrincipal in 'untPrincipal.pas' {frmPrincipal},
+  untLancamentos in 'untLancamentos.pas' {frmLancamentos};
 
 {$R *.res}
 
