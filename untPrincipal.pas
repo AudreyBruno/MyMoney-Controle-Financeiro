@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Layouts, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  untLancamentos, untCategorias;
+  untLancamentos, untCategorias, FMX.Ani;
 
 type
   TfrmPrincipal = class(TForm)
@@ -29,7 +29,7 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    Rectangle1: TRectangle;
+    rectPrincipal: TRectangle;
     Layout7: TLayout;
     Image3: TImage;
     Layout8: TLayout;
@@ -38,14 +38,28 @@ type
     lvLancamentos: TListView;
     imgCategoria: TImage;
     StyleBook: TStyleBook;
+    rectMenu: TRectangle;
+    imgFecharMenu: TImage;
+    lyMenuCat: TLayout;
+    Label9: TLabel;
+    lyMenuLogoff: TLayout;
+    Label10: TLabel;
+    lyPrincipal: TLayout;
+    AnimationMenu: TFloatAnimation;
     procedure FormShow(Sender: TObject);
     procedure lvLancamentosUpdateObjects(const Sender: TObject;
       const AItem: TListViewItem);
     procedure lvLancamentosPaint(Sender: TObject; Canvas: TCanvas;
       const ARect: TRectF);
     procedure lblTodosLancamentosClick(Sender: TObject);
+    procedure AnimationMenuFinish(Sender: TObject);
+    procedure imgFecharMenuClick(Sender: TObject);
+    procedure lyMenuCatClick(Sender: TObject);
+    procedure lyMenuLogoffClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure imgMenuClick(Sender: TObject);
   private
+    procedure OpenMenu(ind: Boolean);
     { Private declarations }
   public
     procedure AddLancamentosLv(listview: TListView;
@@ -65,7 +79,18 @@ var
 
 implementation
 
+uses untLogin;
+
 {$R *.fmx}
+
+procedure TfrmPrincipal.OpenMenu(ind: Boolean);
+begin
+  if rectMenu.Tag = 0 then
+    rectMenu.Visible := True;
+
+  AnimationMenu.StartValue := frmPrincipal.Width + 50;
+  AnimationMenu.Start;
+end;
 
 procedure TfrmPrincipal.AddLancamentosLv(listview: TListView;
                                          id_lancamento: Integer;
@@ -107,6 +132,19 @@ begin
     end;
 end;
 
+procedure TfrmPrincipal.AnimationMenuFinish(Sender: TObject);
+begin
+  AnimationMenu.Inverse := not AnimationMenu.Inverse;
+
+  if rectMenu.Tag = 1 then
+    begin
+      rectMenu.Tag := 0;
+      rectMenu.Visible := False;
+    end
+  else
+    rectMenu.Tag := 1;
+end;
+
 procedure TfrmPrincipal.AddCategoriaLv(listview: TListView;
                                        id_categoria: Integer;
                                        descricao: string;
@@ -137,6 +175,12 @@ begin
     end;
 end;
 
+procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := TCloseAction.caFree;
+  frmPrincipal := nil;
+end;
+
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 var
   foto: TStream;
@@ -152,12 +196,14 @@ begin
   foto.DisposeOf;
 end;
 
+procedure TfrmPrincipal.imgFecharMenuClick(Sender: TObject);
+begin
+  OpenMenu(false);
+end;
+
 procedure TfrmPrincipal.imgMenuClick(Sender: TObject);
 begin
-  if NOT Assigned(frmCategorias) then
-    Application.CreateForm(TfrmCategorias, frmCategorias);
-
-  frmCategorias.Show;
+  OpenMenu(True);
 end;
 
 procedure TfrmPrincipal.lblTodosLancamentosClick(Sender: TObject);
@@ -187,6 +233,25 @@ var
 begin
   txt := TListItemText(AItem.Objects.FindDrawable('txtDescricao'));
   txt.Width := lvLancamentos.Width - txt.PlaceOffset.X - 110;
+end;
+
+procedure TfrmPrincipal.lyMenuCatClick(Sender: TObject);
+begin
+  if NOT Assigned(frmCategorias) then
+    Application.CreateForm(TfrmCategorias, frmCategorias);
+
+  OpenMenu(false);
+  frmCategorias.Show;
+end;
+
+procedure TfrmPrincipal.lyMenuLogoffClick(Sender: TObject);
+begin
+  if NOT Assigned(frmLogin) then
+      Application.CreateForm(TfrmLogin, frmLogin);
+
+  Application.MainForm := FrmLogin;
+  frmLogin.Show;
+  frmPrincipal.Close;
 end;
 
 end.
