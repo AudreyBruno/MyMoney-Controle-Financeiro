@@ -31,7 +31,7 @@ implementation
 
 function TCategoria.Alterar(out erro: string): Boolean;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
   if ID_CATEGORIA <= 0 then
     begin
@@ -82,7 +82,7 @@ end;
 
 function TCategoria.Excluir(out erro: string): Boolean;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
   if ID_CATEGORIA <= 0 then
     begin
@@ -95,6 +95,20 @@ begin
     try
       qry := TFDQuery.Create(nil);
       qry.Connection := Fconn;
+
+      qry.Active := false;
+      qry.SQL.Clear;
+      qry.SQL.Add('SELECT * FROM TAB_LANCAMENTO');
+      qry.SQL.Add('WHERE ID_CATEGORIA = :ID_CATEGORIA');
+      qry.ParamByName('ID_CATEGORIA').Value := ID_CATEGORIA;
+      qry.ExecSQL;
+
+      if qry.RecordCount > 0 then
+        begin
+          Result := False;
+          erro := 'A categoria possui lançamentos e não pode ser excluída';
+          exit;
+        end;
 
       qry.Active := false;
       qry.SQL.Clear;
@@ -118,7 +132,7 @@ end;
 
 function TCategoria.Inserir(out erro: string): Boolean;
 var
-  qry : TFDQuery;
+  qry: TFDQuery;
 begin
   if DESCRICAO = '' then
     begin
