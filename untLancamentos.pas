@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
   FMX.Objects, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
-  FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView;
+  FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
+  uListViewLoader;
 
 type
   TfrmLancamentos = class(TForm)
@@ -70,7 +71,7 @@ begin
   foto.Position := 0;
 
   for i := 1 to 10 do
-    frmPrincipal.AddLancamentosLv(frmLancamentos.lvLancamentos, 1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
+    TListViewLoader.AddLancamentosLv(lvLancamentos, 1, 'Compra', 'Teste', -50, foto, Date);
 
   foto.DisposeOf;
 end;

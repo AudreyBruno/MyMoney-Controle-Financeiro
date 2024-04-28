@@ -7,13 +7,14 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Objects, FMX.Layouts,
   FMX.ListView.Types, FMX.ListView.Appearances, FMX.ListView.Adapters.Base,
-  FMX.ListView;
+  FMX.ListView, classCategoria, DataModule.Principal, FireDAC.Comp.Client, Data.DB,
+  uListViewLoader;
 
 type
   TfrmCategorias = class(TForm)
     Rectangle1: TRectangle;
     imgAdd: TImage;
-    Label6: TLabel;
+    lblQtdCat: TLabel;
     Layout1: TLayout;
     Label1: TLabel;
     imgBack: TImage;
@@ -30,6 +31,7 @@ type
     procedure CadCategorias(id: integer);
     { Private declarations }
   public
+    procedure ListarCategorias;
     { Public declarations }
   end;
 
@@ -42,15 +44,63 @@ implementation
 
 uses untPrincipal, untCategoriasCad;
 
+procedure TfrmCategorias.ListarCategorias;
+var
+  cat : TCategoria;
+  qry: TFDQuery;
+  erro: string;
+  icone: TStream;
+  i: Integer;
+begin
+  lvCategorias.Items.Clear;
+
+  try
+    cat := TCategoria.Create(DMPrincipal.FDConn);
+    qry := cat.ListarCategoria(erro);
+
+    qry.First;
+    for i := 0 to qry.RecordCount - 1 do
+      begin
+        if qry.FieldByName('ICONE').AsString <> '' then
+          icone := qry.CreateBlobStream(qry.FieldByName('ICONE'), TBlobStreamMode.bmRead)
+        else
+          icone := nil;
+
+        TListViewLoader.AddCategoriaLv(lvCategorias,
+                                       qry.FieldByName('ID_CATEGORIA').AsInteger,
+                                       qry.FieldByName('DESCRICAO').AsString,
+                                       icone);
+
+        if icone <> nil then
+          icone.DisposeOf;
+
+        qry.Next;
+      end;
+
+    lblQtdCat.Text := lvCategorias.Items.Count.ToString + ' categoria(s)';
+  finally
+    qry.DisposeOf;
+    cat.DisposeOf;
+  end;
+end;
+
 procedure TfrmCategorias.CadCategorias(id: integer);
 begin
   if NOT Assigned(frmCategoriaCad) then
     Application.CreateForm(TfrmCategoriaCad, frmCategoriaCad);
 
+  frmCategoriaCad.id_cat := id;
+
   if id = 0 then
-    frmCategoriaCad.lblTitle.Text := 'Nova Categoria'
+    begin
+      frmCategoriaCad.modo := 'I';
+      frmCategoriaCad.lblTitle.Text := 'Nova Categoria';
+    end
   else
-    frmCategoriaCad.lblTitle.Text := 'Alterar Categoria';
+    begin
+      frmCategoriaCad.modo := 'A';
+      frmCategoriaCad.lblTitle.Text := 'Alterar Categoria';
+    end;
 
   frmCategoriaCad.Show;
 end;
@@ -62,18 +112,8 @@ begin
 end;
 
 procedure TfrmCategorias.FormShow(Sender: TObject);
-var
-  foto: TStream;
-  i: Integer;
 begin
-  foto := TMemoryStream.Create;
-  frmPrincipal.imgCategoria.Bitmap.SaveToStream(foto);
-  foto.Position := 0;
-
-  for i := 1 to 10 do
-    frmPrincipal.AddCategoriaLv(lvCategorias, 1, 'CategoriaTeste', foto);
-
-  foto.DisposeOf;
+  ListarCategorias;
 end;
 
 procedure TfrmCategorias.imgAddClick(Sender: TObject);
@@ -89,7 +129,7 @@ end;
 procedure TfrmCategorias.lvCategoriasItemClick(const Sender: TObject;
   const AItem: TListViewItem);
 begin
-  CadCategorias(1);
+  CadCategorias(AItem.Tag);
 end;
 
 procedure TfrmCategorias.lvCategoriasUpdateObjects(const Sender: TObject;

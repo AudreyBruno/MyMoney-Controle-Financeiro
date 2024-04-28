@@ -11,7 +11,8 @@ uses
   untCategorias in 'untCategorias.pas' {frmCategorias},
   untCategoriasCad in 'untCategoriasCad.pas' {frmCategoriaCad},
   DataModule.Principal in 'DataModules\DataModule.Principal.pas' {DMPrincipal: TDataModule},
-  classCategoria in 'Classes\classCategoria.pas';
+  classCategoria in 'Classes\classCategoria.pas',
+  uListViewLoader in 'Units\uListViewLoader.pas';
 
 {$R *.res}
 

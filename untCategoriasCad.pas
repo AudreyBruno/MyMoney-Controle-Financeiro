@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, untPrincipal, FMX.Edit,
-  FMX.ListBox;
+  FMX.ListBox, classCategoria, FireDAC.Comp.Client, DataModule.Principal,
+  untCategorias, FMX.DialogService;
 
 type
   TfrmCategoriaCad = class(TForm)
@@ -14,11 +15,11 @@ type
     lblTitle: TLabel;
     imgBack: TImage;
     imgSave: TImage;
-    Rectangle1: TRectangle;
-    Image1: TImage;
+    rectDelete: TRectangle;
+    imgDelete: TImage;
     Layout4: TLayout;
     Label4: TLabel;
-    Edit3: TEdit;
+    edtDescricao: TEdit;
     Line3: TLine;
     Label1: TLabel;
     lbIcone: TListBox;
@@ -59,12 +60,18 @@ type
     procedure FormResize(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Image2Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure imgSaveClick(Sender: TObject);
+    procedure imgDeleteClick(Sender: TObject);
   private
     selectedIcon: TBitmap;
+    selectedIndiceIcon: Integer;
     procedure SelectIcon(img: TImage);
     { Private declarations }
   public
     { Public declarations }
+    modo: string;
+    id_cat: Integer;
   end;
 
 var
@@ -77,6 +84,7 @@ implementation
 procedure TfrmCategoriaCad.SelectIcon(img: TImage);
 begin
   selectedIcon := img.Bitmap;
+  selectedIndiceIcon := TListBoxItem(img.Parent).Index;
 
   imgSelect.Parent := img.Parent;
 end;
@@ -92,6 +100,42 @@ begin
   lbIcone.Columns := Trunc(lbIcone.Width / 80);
 end;
 
+procedure TfrmCategoriaCad.FormShow(Sender: TObject);
+var
+  cat : TCategoria;
+  qry: TFDQuery;
+  erro: string;
+  item : TListBoxItem;
+  img : TImage;
+begin
+  if modo = 'I' then
+    begin
+      rectDelete.Visible := False;
+      edtDescricao.Text := '';
+      SelectIcon(Image2);
+    end
+  else
+    begin
+      try
+        rectDelete.Visible := True;
+
+        cat := TCategoria.Create(DMPrincipal.FDConn);
+        cat.ID_CATEGORIA := id_cat;
+
+        qry := cat.ListarCategoria(erro);
+
+        edtDescricao.Text := qry.FieldByName('DESCRICAO').AsString;
+
+        item := lbIcone.ItemByIndex(qry.FieldByName('INDICE_ICONE').AsInteger);
+        imgSelect.Parent := item;
+
+      finally
+        qry.DisposeOf;
+        cat.DisposeOf;
+      end;
+    end;
+end;
+
 procedure TfrmCategoriaCad.Image2Click(Sender: TObject);
 begin
   SelectIcon(TImage(Sender));
@@ -100,6 +144,76 @@ end;
 procedure TfrmCategoriaCad.imgBackClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmCategoriaCad.imgDeleteClick(Sender: TObject);
+var
+  cat: TCategoria;
+  erro: string;
+begin
+  TDialogService.MessageDialog('Confirma exclusão da categoria?',
+                               TMsgDlgType.mtConfirmation,
+                               [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo],
+                               TMsgDlgBtn.mbNo,
+                               0,
+  procedure(const AResult: TModalResult)
+  var
+    erro: string;
+  begin
+    if AResult = mrYes then
+      begin
+        try
+          cat := TCategoria.Create(DMPrincipal.FDConn);
+          cat.ID_CATEGORIA := id_cat;
+
+          if not cat.Excluir(erro) then
+            begin
+              ShowMessage(erro);
+              Exit;
+            end;
+
+          frmCategorias.ListarCategorias;
+          Close;
+        finally
+          cat.DisposeOf;
+        end;
+      end;
+  end);
+end;
+
+procedure TfrmCategoriaCad.imgSaveClick(Sender: TObject);
+var
+  cat : TCategoria;
+  erro: string;
+  icone: TStream;
+begin
+  try
+    cat := TCategoria.Create(DMPrincipal.FDConn);
+    cat.DESCRICAO := edtDescricao.Text;
+    cat.ICONE := selectedIcon;
+    cat.INDICE_ICONE := selectedIndiceIcon;
+
+    if modo = 'I' then
+      begin
+        cat.Inserir(erro);
+      end
+    else
+      begin
+        cat.ID_CATEGORIA := id_cat;
+        cat.Alterar(erro);
+      end;
+
+    if erro <> '' then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+
+    frmCategorias.ListarCategorias;
+    close;
+  finally
+    cat.DisposeOf;
+  end;
 end;
 
 end.

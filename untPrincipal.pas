@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Layouts, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  untLancamentos, untCategorias, FMX.Ani;
+  untLancamentos, untCategorias, FMX.Ani, uListViewLoader;
 
 type
   TfrmPrincipal = class(TForm)
@@ -62,15 +62,6 @@ type
     procedure OpenMenu(ind: Boolean);
     { Private declarations }
   public
-    procedure AddLancamentosLv(listview: TListView;
-                                         id_lancamento: Integer;
-                                         descricao, categoria: string;
-                                         valor: double; foto: TStream;
-                                         dt: TDateTime);
-    procedure AddCategoriaLv(listview: TListView;
-                                       id_categoria: Integer;
-                                       descricao: string;
-                                       foto: TStream);
     { Public declarations }
   end;
 
@@ -92,46 +83,6 @@ begin
   AnimationMenu.Start;
 end;
 
-procedure TfrmPrincipal.AddLancamentosLv(listview: TListView;
-                                         id_lancamento: Integer;
-                                         descricao, categoria: string;
-                                         valor: double; foto: TStream;
-                                         dt: TDateTime);
-var
-  txt: TListItemText;
-  img: TListItemImage;
-  bmp : TBitmap;
-begin
-  with listview.Items.Add do
-    begin
-      Height := 55;
-      Tag := id_lancamento;
-
-      txt := TListItemText(Objects.FindDrawable('txtDescricao'));
-      txt.Text := descricao;
-
-      txt := TListItemText(Objects.FindDrawable('txtCategoria'));
-      txt.Text := categoria;
-
-      txt := TListItemText(Objects.FindDrawable('txtData'));
-      txt.Text := FormatDateTime('dd/mm', dt);
-
-      txt := TListItemText(Objects.FindDrawable('txtValor'));
-      txt.Text := FormatFloat('#,##0.00', valor);
-
-      img := TListItemImage(Objects.FindDrawable('imgIcon'));
-
-      if foto <> nil then
-        begin
-          bmp := TBitmap.Create;
-          bmp.LoadFromStream(foto);
-
-          img.OwnsBitmap := true;
-          img.Bitmap := bmp;
-        end;
-    end;
-end;
-
 procedure TfrmPrincipal.AnimationMenuFinish(Sender: TObject);
 begin
   AnimationMenu.Inverse := not AnimationMenu.Inverse;
@@ -143,36 +94,6 @@ begin
     end
   else
     rectMenu.Tag := 1;
-end;
-
-procedure TfrmPrincipal.AddCategoriaLv(listview: TListView;
-                                       id_categoria: Integer;
-                                       descricao: string;
-                                       foto: TStream);
-var
-  txt: TListItemText;
-  img: TListItemImage;
-  bmp : TBitmap;
-begin
-  with listview.Items.Add do
-    begin
-      Height := 55;
-      Tag := id_categoria;
-
-      txt := TListItemText(Objects.FindDrawable('txtDescricao'));
-      txt.Text := descricao;
-
-      img := TListItemImage(Objects.FindDrawable('imgIcon'));
-
-      if foto <> nil then
-        begin
-          bmp := TBitmap.Create;
-          bmp.LoadFromStream(foto);
-
-          img.OwnsBitmap := true;
-          img.Bitmap := bmp;
-        end;
-    end;
 end;
 
 procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -191,7 +112,7 @@ begin
   foto.Position := 0;
 
   for i := 1 to 10 do
-    AddLancamentosLv(frmPrincipal.lvLancamentos, 1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
+    TListViewLoader.AddLancamentosLv(lvLancamentos, 1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
 
   foto.DisposeOf;
 end;
