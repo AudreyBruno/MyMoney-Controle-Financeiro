@@ -101,7 +101,7 @@ begin
       qry.SQL.Add('SELECT * FROM TAB_LANCAMENTO');
       qry.SQL.Add('WHERE ID_CATEGORIA = :ID_CATEGORIA');
       qry.ParamByName('ID_CATEGORIA').Value := ID_CATEGORIA;
-      qry.ExecSQL;
+      qry.Active := true;
 
       if qry.RecordCount > 0 then
         begin
