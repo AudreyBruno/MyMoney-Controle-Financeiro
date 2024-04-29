@@ -129,6 +129,8 @@ begin
         item := lbIcone.ItemByIndex(qry.FieldByName('INDICE_ICONE').AsInteger);
         imgSelect.Parent := item;
 
+        img := frmCategoriaCad.FindComponent('Image' + (item.Index + 2).tostring) as TImage;
+        SelectIcon(img);
       finally
         qry.DisposeOf;
         cat.DisposeOf;
