@@ -23,11 +23,11 @@ type
     Rectangle1: TRectangle;
     imgAdd: TImage;
     Layout3: TLayout;
-    Label4: TLabel;
+    lblRec: TLabel;
     Label5: TLabel;
-    Label2: TLabel;
+    lblDesp: TLabel;
     Label3: TLabel;
-    Label6: TLabel;
+    lblSaldo: TLabel;
     Label7: TLabel;
     lvLancamentos: TListView;
     procedure imgBackClick(Sender: TObject);
@@ -94,8 +94,11 @@ var
   erro: string;
   i: Integer;
   foto: TStream;
+  vl_rec, vl_desp: double;
 begin
   lvLancamentos.Items.Clear;
+  vl_rec := 0;
+  vl_desp := 0;
 
   try
     lanc := TLancamento.Create(DMPrincipal.FDConn);
@@ -125,10 +128,19 @@ begin
                                          foto,
                                          qry.FieldByName('DATA').AsDateTime);
 
+        if qry.FieldByName('VALOR').AsFloat > 0 then
+          vl_rec := vl_rec + qry.FieldByName('VALOR').AsFloat
+        else
+          vl_desp := vl_desp + qry.FieldByName('VALOR').AsFloat;
+
         qry.Next;
 
         foto.DisposeOf;
       end;
+
+    lblRec.Text := FormatFloat('#,##0.00', vl_rec);
+    lblDesp.Text := FormatFloat('#,##0.00', vl_desp);
+    lblSaldo.Text := FormatFloat('#,##0.00', vl_rec + vl_desp);
 
   finally
     lanc.DisposeOf;
