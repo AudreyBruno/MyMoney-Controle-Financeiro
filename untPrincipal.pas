@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Layouts, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  untLancamentos, untCategorias, FMX.Ani, uListViewLoader;
+  untLancamentos, untCategorias, FMX.Ani, uListViewLoader, classLancamento,
+  DataModule.Principal, FireDAC.Comp.Client, Data.DB;
 
 type
   TfrmPrincipal = class(TForm)
@@ -49,8 +50,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure lvLancamentosUpdateObjects(const Sender: TObject;
       const AItem: TListViewItem);
-    procedure lvLancamentosPaint(Sender: TObject; Canvas: TCanvas;
-      const ARect: TRectF);
     procedure lblTodosLancamentosClick(Sender: TObject);
     procedure AnimationMenuFinish(Sender: TObject);
     procedure imgFecharMenuClick(Sender: TObject);
@@ -104,17 +103,46 @@ end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 var
-  foto: TStream;
+  lanc: TLancamento;
+  qry: TFDQuery;
+  erro: string;
   i: Integer;
+  foto: TStream;
 begin
-  foto := TMemoryStream.Create;
-  imgCategoria.Bitmap.SaveToStream(foto);
-  foto.Position := 0;
+  try
+    lanc := TLancamento.Create(DMPrincipal.FDConn);
+    qry := lanc.ListarLancamento(10, erro);
 
-  for i := 1 to 10 do
-    TListViewLoader.AddLancamentosLv(lvLancamentos, 1, 'Compra de Passagem', 'Transporte', -50, foto, Date);
+    if erro <> '' then
+      begin
+        ShowMessage(erro);
+        exit;
+      end;
 
-  foto.DisposeOf;
+    qry.First;
+    for i := 0 to qry.RecordCount - 1 do
+      begin
+        if qry.FieldByName('ICONE').AsString <> '' then
+          foto := qry.CreateBlobStream(qry.FieldByName('ICONE'), TBlobStreamMode.bmRead)
+        else
+          foto := nil;
+
+        TListViewLoader.AddLancamentosLv(lvLancamentos,
+                                         qry.FieldByName('ID_LANCAMENTO').AsInteger,
+                                         qry.FieldByName('DESCRICAO').AsString,
+                                         qry.FieldByName('DESCRICAO_CATEGORIA').AsString,
+                                         qry.FieldByName('VALOR').AsFloat,
+                                         foto,
+                                         qry.FieldByName('DATA').AsDateTime);
+
+        qry.Next;
+
+        foto.DisposeOf;
+      end;
+
+  finally
+    lanc.DisposeOf;
+  end;
 end;
 
 procedure TfrmPrincipal.imgFecharMenuClick(Sender: TObject);
@@ -133,18 +161,6 @@ begin
     Application.CreateForm(TfrmLancamentos, frmLancamentos);
 
   frmLancamentos.Show;
-end;
-
-procedure TfrmPrincipal.lvLancamentosPaint(Sender: TObject; Canvas: TCanvas;
-  const ARect: TRectF);
-var
-  foto: TStream;
-  i: Integer;
-begin
-  {if lvLancamentos.Items.Count > 0 then
-    if lvLancamentos.GetItemRect(lvLancamentos.Items.Count - 4).Bottom <= lvLancamentos.Height then
-      for i := 1 to 10 do
-        AddLancamentosLv(frmPrincipal.lvLancamentos, 1, 'Compra' + IntToStr(i), 'Transporte', -50000.59, foto, Date); }
 end;
 
 procedure TfrmPrincipal.lvLancamentosUpdateObjects(const Sender: TObject;
