@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
   FMX.Objects, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  uListViewLoader;
+  uListViewLoader, classLancamento, FireDAC.Comp.Client, DataModule.Principal,
+  Data.DB, DateUtils;
 
 type
   TfrmLancamentos = class(TForm)
@@ -30,14 +31,21 @@ type
     Label7: TLabel;
     lvLancamentos: TListView;
     procedure imgBackClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure lvLancamentosUpdateObjects(const Sender: TObject;
       const AItem: TListViewItem);
     procedure lvLancamentosItemClick(const Sender: TObject;
       const AItem: TListViewItem);
     procedure imgAddClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure imgPrevClick(Sender: TObject);
+    procedure imgNextClick(Sender: TObject);
   private
+    dt_filtro : TDate;
+
     procedure EditarLançamentos(id: integer);
+    procedure ListarLancamentos;
+    procedure NavegarMes(num_mes: integer);
+    function NomeMes: string;
     { Private declarations }
   public
     { Public declarations }
@@ -52,6 +60,81 @@ uses untPrincipal, untLancamentosCad;
 
 {$R *.fmx}
 
+function TfrmLancamentos.NomeMes(): string;
+begin
+    case MonthOf(dt_filtro) of
+        1 : Result := 'Janeiro';
+        2 : Result := 'Fevereiro';
+        3 : Result := 'Março';
+        4 : Result := 'Abril';
+        5 : Result := 'Maio';
+        6 : Result := 'Junho';
+        7 : Result := 'Julho';
+        8 : Result := 'Agosto';
+        9 : Result := 'Setembro';
+        10 : Result := 'Outubro';
+        11 : Result := 'Novembro';
+        12 : Result := 'Dezembro';
+    end;
+
+    Result := Result + ' / ' + YearOf(dt_filtro).ToString;
+end;
+
+procedure TfrmLancamentos.NavegarMes(num_mes: integer);
+begin
+  dt_filtro := IncMonth(dt_filtro, num_mes);
+  lblMes.Text := NomeMes;
+  ListarLancamentos;
+end;
+
+procedure TfrmLancamentos.ListarLancamentos;
+var
+  lanc: TLancamento;
+  qry: TFDQuery;
+  erro: string;
+  i: Integer;
+  foto: TStream;
+begin
+  lvLancamentos.Items.Clear;
+
+  try
+    lanc := TLancamento.Create(DMPrincipal.FDConn);
+    lanc.DATA_DE := FormatDateTime('YYYY-MM-DD', StartOfTheMonth(dt_filtro));
+    lanc.DATA_ATE := FormatDateTime('YYYY-MM-DD', EndOfTheMonth(dt_filtro));
+    qry := lanc.ListarLancamento(0, erro);
+
+    if erro <> '' then
+      begin
+        ShowMessage(erro);
+        exit;
+      end;
+
+    qry.First;
+    for i := 0 to qry.RecordCount - 1 do
+      begin
+        if qry.FieldByName('ICONE').AsString <> '' then
+          foto := qry.CreateBlobStream(qry.FieldByName('ICONE'), TBlobStreamMode.bmRead)
+        else
+          foto := nil;
+
+        TListViewLoader.AddLancamentosLv(lvLancamentos,
+                                         qry.FieldByName('ID_LANCAMENTO').AsInteger,
+                                         qry.FieldByName('DESCRICAO').AsString,
+                                         qry.FieldByName('DESCRICAO_CATEGORIA').AsString,
+                                         qry.FieldByName('VALOR').AsFloat,
+                                         foto,
+                                         qry.FieldByName('DATA').AsDateTime);
+
+        qry.Next;
+
+        foto.DisposeOf;
+      end;
+
+  finally
+    lanc.DisposeOf;
+  end;
+end;
+
 procedure TfrmLancamentos.EditarLançamentos(id: integer);
 begin
   if NOT Assigned(frmLancamentosCad) then
@@ -61,19 +144,9 @@ begin
 end;
 
 procedure TfrmLancamentos.FormShow(Sender: TObject);
-
-var
-  foto: TStream;
-  i: Integer;
 begin
-  foto := TMemoryStream.Create;
-  frmPrincipal.imgCategoria.Bitmap.SaveToStream(foto);
-  foto.Position := 0;
-
-  for i := 1 to 10 do
-    TListViewLoader.AddLancamentosLv(lvLancamentos, 1, 'Compra', 'Teste', -50, foto, Date);
-
-  foto.DisposeOf;
+  dt_filtro := Date;
+  NavegarMes(0);
 end;
 
 procedure TfrmLancamentos.imgAddClick(Sender: TObject);
@@ -84,6 +157,16 @@ end;
 procedure TfrmLancamentos.imgBackClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmLancamentos.imgNextClick(Sender: TObject);
+begin
+  NavegarMes(1);
+end;
+
+procedure TfrmLancamentos.imgPrevClick(Sender: TObject);
+begin
+  NavegarMes(-1);
 end;
 
 procedure TfrmLancamentos.lvLancamentosItemClick(const Sender: TObject;
