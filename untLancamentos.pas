@@ -42,7 +42,7 @@ type
   private
     dt_filtro : TDate;
 
-    procedure EditarLançamentos(id: integer);
+    procedure AbrirLançamentos(id: integer);
     procedure ListarLancamentos;
     procedure NavegarMes(num_mes: integer);
     function NomeMes: string;
@@ -147,11 +147,17 @@ begin
   end;
 end;
 
-procedure TfrmLancamentos.EditarLançamentos(id: integer);
+procedure TfrmLancamentos.AbrirLançamentos(id: integer);
 begin
   if NOT Assigned(frmLancamentosCad) then
     Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
 
+  if id <> 0 then
+    frmLancamentosCad.modo := 'A'
+  else
+    frmLancamentosCad.modo := 'I';
+
+  frmLancamentosCad.id_lanc := id;
   frmLancamentosCad.Show;
 end;
 
@@ -163,7 +169,7 @@ end;
 
 procedure TfrmLancamentos.imgAddClick(Sender: TObject);
 begin
-  EditarLançamentos(0);
+  AbrirLançamentos(0);
 end;
 
 procedure TfrmLancamentos.imgBackClick(Sender: TObject);
@@ -184,7 +190,7 @@ end;
 procedure TfrmLancamentos.lvLancamentosItemClick(const Sender: TObject;
   const AItem: TListViewItem);
 begin
-  EditarLançamentos(AItem.Tag);
+  AbrirLançamentos(AItem.Tag);
 end;
 
 procedure TfrmLancamentos.lvLancamentosUpdateObjects(const Sender: TObject;

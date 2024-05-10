@@ -8,7 +8,7 @@ uses
   FMX.Layouts, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
   untLancamentos, untCategorias, FMX.Ani, uListViewLoader, classLancamento,
-  DataModule.Principal, FireDAC.Comp.Client, Data.DB;
+  DataModule.Principal, FireDAC.Comp.Client, Data.DB, untLancamentosCad;
 
 type
   TfrmPrincipal = class(TForm)
@@ -32,7 +32,7 @@ type
     Label7: TLabel;
     rectPrincipal: TRectangle;
     Layout7: TLayout;
-    Image3: TImage;
+    imgAddLanc: TImage;
     Layout8: TLayout;
     Label8: TLabel;
     lblTodosLancamentos: TLabel;
@@ -57,6 +57,9 @@ type
     procedure lyMenuLogoffClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure imgMenuClick(Sender: TObject);
+    procedure imgAddLancClick(Sender: TObject);
+    procedure lvLancamentosItemClick(const Sender: TObject;
+      const AItem: TListViewItem);
   private
     procedure OpenMenu(ind: Boolean);
     { Private declarations }
@@ -145,6 +148,16 @@ begin
   end;
 end;
 
+procedure TfrmPrincipal.imgAddLancClick(Sender: TObject);
+begin
+  if NOT Assigned(frmLancamentosCad) then
+    Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
+
+  frmLancamentosCad.modo := 'I';
+  frmLancamentosCad.id_lanc := 0;
+  frmLancamentosCad.Show;
+end;
+
 procedure TfrmPrincipal.imgFecharMenuClick(Sender: TObject);
 begin
   OpenMenu(false);
@@ -161,6 +174,17 @@ begin
     Application.CreateForm(TfrmLancamentos, frmLancamentos);
 
   frmLancamentos.Show;
+end;
+
+procedure TfrmPrincipal.lvLancamentosItemClick(const Sender: TObject;
+  const AItem: TListViewItem);
+begin
+  if NOT Assigned(frmLancamentosCad) then
+    Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
+
+  frmLancamentosCad.modo := 'A';
+  frmLancamentosCad.id_lanc := AItem.Tag;
+  frmLancamentosCad.Show;
 end;
 
 procedure TfrmPrincipal.lvLancamentosUpdateObjects(const Sender: TObject;
