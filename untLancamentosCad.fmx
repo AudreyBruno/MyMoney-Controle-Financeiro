@@ -12,7 +12,7 @@ object frmLancamentosCad: TfrmLancamentosCad
   FormFactor.Devices = [Desktop]
   OnShow = FormShow
   DesignerMasterStyle = 3
-  object Rectangle1: TRectangle
+  object rectDelete: TRectangle
     Align = Bottom
     Corners = [TopLeft, TopRight]
     Fill.Color = xFF5769DF

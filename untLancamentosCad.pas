@@ -10,11 +10,11 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client, classLancamento;
 
 type
   TfrmLancamentosCad = class(TForm)
-    Rectangle1: TRectangle;
+    rectDelete: TRectangle;
     Image1: TImage;
     Layout1: TLayout;
     Label1: TLabel;
@@ -92,8 +92,57 @@ begin
 end;
 
 procedure TfrmLancamentosCad.FormShow(Sender: TObject);
+var
+  lanc: TLancamento;
+  qry: TFDQuery;
+  erro: string;
 begin
   ListaCategorias;
+
+  if modo = 'I' then
+    begin
+      edtDescricao.Text := '';
+      edtValor.Text := '';
+      edtDate.Date := Date;
+
+      imgTipoLanc.Bitmap := imgDespesa.Bitmap;
+      imgTipoLanc.Tag := -1;
+
+      rectDelete.Visible := False;
+    end
+  else
+    begin
+      try
+        lanc := TLancamento.Create(DMPrincipal.FDConn);
+        lanc.ID_LANCAMENTO := id_lanc;
+        qry := lanc.ListarLancamento(0, erro);
+
+        edtDescricao.Text := qry.FieldByName('DESCRICAO').AsString;
+        edtDate.Date := qry.FieldByName('DESCRICAO').AsDateTime;
+
+        if qry.FieldByName('VALOR').AsFloat < 0 then
+          begin
+            edtValor.Text := FormatFloat('#,##0.00', qry.FieldByName('VALOR').AsFloat * -1);  
+
+            imgTipoLanc.Bitmap := imgDespesa.Bitmap;
+            imgTipoLanc.Tag := -1;
+          end
+        else
+          begin
+            edtValor.Text := FormatFloat('#,##0.00', qry.FieldByName('VALOR').AsFloat);  
+
+            imgTipoLanc.Bitmap := imgReceita.Bitmap;
+            imgTipoLanc.Tag := 1;
+          end;
+
+        cbCategorias.ItemIndex := cbCategorias.Items.IndexOf(qry.FieldByName('DESCRICAO_CATEGORIA').AsString);
+                                                      
+        rectDelete.Visible := True;
+      finally
+        lanc.DisposeOf;
+        qry.DisposeOf;
+      end;
+    end;
 end;
 
 procedure TfrmLancamentosCad.imgBackClick(Sender: TObject);
