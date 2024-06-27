@@ -62,6 +62,8 @@ type
       const AItem: TListViewItem);
   private
     procedure OpenMenu(ind: Boolean);
+    procedure ListarLancamentos;
+    procedure AbrirLançamentos(id: integer);
     { Private declarations }
   public
     { Public declarations }
@@ -85,26 +87,24 @@ begin
   AnimationMenu.Start;
 end;
 
-procedure TfrmPrincipal.AnimationMenuFinish(Sender: TObject);
+procedure TfrmPrincipal.AbrirLançamentos(id: integer);
 begin
-  AnimationMenu.Inverse := not AnimationMenu.Inverse;
+  if NOT Assigned(frmLancamentosCad) then
+    Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
 
-  if rectMenu.Tag = 1 then
-    begin
-      rectMenu.Tag := 0;
-      rectMenu.Visible := False;
-    end
+  if id <> 0 then
+    frmLancamentosCad.modo := 'A'
   else
-    rectMenu.Tag := 1;
+    frmLancamentosCad.modo := 'I';
+
+  frmLancamentosCad.id_lanc := id;
+  frmLancamentosCad.ShowModal(procedure(ModalResult: TModalResult)
+    begin
+      ListarLancamentos;
+    end);
 end;
 
-procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Action := TCloseAction.caFree;
-  frmPrincipal := nil;
-end;
-
-procedure TfrmPrincipal.FormShow(Sender: TObject);
+procedure TfrmPrincipal.ListarLancamentos;
 var
   lanc: TLancamento;
   qry: TFDQuery;
@@ -113,6 +113,8 @@ var
   foto: TStream;
 begin
   try
+    lvLancamentos.Items.Clear;
+
     lanc := TLancamento.Create(DMPrincipal.FDConn);
     qry := lanc.ListarLancamento(10, erro);
 
@@ -148,14 +150,33 @@ begin
   end;
 end;
 
+procedure TfrmPrincipal.AnimationMenuFinish(Sender: TObject);
+begin
+  AnimationMenu.Inverse := not AnimationMenu.Inverse;
+
+  if rectMenu.Tag = 1 then
+    begin
+      rectMenu.Tag := 0;
+      rectMenu.Visible := False;
+    end
+  else
+    rectMenu.Tag := 1;
+end;
+
+procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := TCloseAction.caFree;
+  frmPrincipal := nil;
+end;
+
+procedure TfrmPrincipal.FormShow(Sender: TObject);
+begin
+  ListarLancamentos;
+end;
+
 procedure TfrmPrincipal.imgAddLancClick(Sender: TObject);
 begin
-  if NOT Assigned(frmLancamentosCad) then
-    Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
-
-  frmLancamentosCad.modo := 'I';
-  frmLancamentosCad.id_lanc := 0;
-  frmLancamentosCad.Show;
+  AbrirLançamentos(0);
 end;
 
 procedure TfrmPrincipal.imgFecharMenuClick(Sender: TObject);
@@ -179,12 +200,7 @@ end;
 procedure TfrmPrincipal.lvLancamentosItemClick(const Sender: TObject;
   const AItem: TListViewItem);
 begin
-  if NOT Assigned(frmLancamentosCad) then
-    Application.CreateForm(TfrmLancamentosCad, frmLancamentosCad);
-
-  frmLancamentosCad.modo := 'A';
-  frmLancamentosCad.id_lanc := AItem.Tag;
-  frmLancamentosCad.Show;
+  AbrirLançamentos(AItem.Tag);
 end;
 
 procedure TfrmPrincipal.lvLancamentosUpdateObjects(const Sender: TObject;

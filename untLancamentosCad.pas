@@ -10,7 +10,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, classLancamento;
+  FireDAC.Comp.Client, classLancamento, uFormat;
 
 type
   TfrmLancamentosCad = class(TForm)
@@ -45,8 +45,11 @@ type
     procedure imgHojeClick(Sender: TObject);
     procedure imgOntemClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure imgSaveClick(Sender: TObject);
+    procedure edtValorTyping(Sender: TObject);
   private
     procedure ListaCategorias;
+    function TrataValor(value: string): Double;
     { Private declarations }
   public
     { Public declarations }
@@ -60,6 +63,18 @@ var
 implementation
 
 {$R *.fmx}
+
+function TfrmLancamentosCad.TrataValor(value: string): Double;
+begin
+  value := StringReplace(value, '.', '', [rfReplaceAll]);
+  value := StringReplace(value, ',', '', [rfReplaceAll]);
+
+  try
+    Result := StrToFloat(value) / 100;
+  except
+    Result := 0;
+  end;
+end;
 
 procedure TfrmLancamentosCad.ListaCategorias;
 var
@@ -91,6 +106,11 @@ begin
   end;
 end;
 
+procedure TfrmLancamentosCad.edtValorTyping(Sender: TObject);
+begin
+  Formatar(edtValor, TFormato.Valor);
+end;
+
 procedure TfrmLancamentosCad.FormShow(Sender: TObject);
 var
   lanc: TLancamento;
@@ -118,7 +138,7 @@ begin
         qry := lanc.ListarLancamento(0, erro);
 
         edtDescricao.Text := qry.FieldByName('DESCRICAO').AsString;
-        edtDate.Date := qry.FieldByName('DESCRICAO').AsDateTime;
+        edtDate.Date := qry.FieldByName('DATA').AsDateTime;
 
         if qry.FieldByName('VALOR').AsFloat < 0 then
           begin
@@ -158,6 +178,40 @@ end;
 procedure TfrmLancamentosCad.imgOntemClick(Sender: TObject);
 begin
   edtDate.Date := Date - 1;
+end;
+
+procedure TfrmLancamentosCad.imgSaveClick(Sender: TObject);
+var
+  lanc: TLancamento;
+  erro: string;
+begin
+  try
+    lanc := TLancamento.Create(DMPrincipal.FDConn);
+    lanc.DESCRICAO := edtDescricao.Text;
+    lanc.VALOR := TrataValor(edtValor.Text) * imgTipoLanc.Tag;
+    lanc.DATA := edtDate.Date;
+    lanc.ID_CATEGORIA := integer(cbCategorias.Items.Objects[cbCategorias.ItemIndex]);
+
+    if modo = 'I' then
+      begin
+        lanc.Inserir(erro);
+      end
+    else
+      begin
+        lanc.ID_LANCAMENTO := id_lanc;
+        lanc.Alterar(erro);
+      end;
+
+    if erro <> '' then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+
+    Close;
+  finally
+    lanc.DisposeOf;
+  end;
 end;
 
 procedure TfrmLancamentosCad.imgTipoLancClick(Sender: TObject);

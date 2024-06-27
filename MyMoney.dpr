@@ -13,7 +13,8 @@ uses
   DataModule.Principal in 'DataModules\DataModule.Principal.pas' {DMPrincipal: TDataModule},
   classCategoria in 'Classes\classCategoria.pas',
   uListViewLoader in 'Units\uListViewLoader.pas',
-  classLancamento in 'Classes\classLancamento.pas';
+  classLancamento in 'Classes\classLancamento.pas',
+  uFormat in 'Units\uFormat.pas';
 
 {$R *.res}
 

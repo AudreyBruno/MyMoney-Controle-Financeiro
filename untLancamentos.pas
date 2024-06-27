@@ -94,11 +94,11 @@ var
   erro: string;
   i: Integer;
   foto: TStream;
-  vl_rec, vl_desp: double;
+  vlRec, vlDesp: double;
 begin
   lvLancamentos.Items.Clear;
-  vl_rec := 0;
-  vl_desp := 0;
+  vlRec := 0;
+  vlDesp := 0;
 
   try
     lanc := TLancamento.Create(DMPrincipal.FDConn);
@@ -129,18 +129,18 @@ begin
                                          qry.FieldByName('DATA').AsDateTime);
 
         if qry.FieldByName('VALOR').AsFloat > 0 then
-          vl_rec := vl_rec + qry.FieldByName('VALOR').AsFloat
+          vlRec := vlRec + qry.FieldByName('VALOR').AsFloat
         else
-          vl_desp := vl_desp + qry.FieldByName('VALOR').AsFloat;
+          vlDesp := vlDesp + qry.FieldByName('VALOR').AsFloat;
 
         qry.Next;
 
         foto.DisposeOf;
       end;
 
-    lblRec.Text := FormatFloat('#,##0.00', vl_rec);
-    lblDesp.Text := FormatFloat('#,##0.00', vl_desp);
-    lblSaldo.Text := FormatFloat('#,##0.00', vl_rec + vl_desp);
+    lblRec.Text := FormatFloat('#,##0.00', vlRec);
+    lblDesp.Text := FormatFloat('#,##0.00', vlDesp);
+    lblSaldo.Text := FormatFloat('#,##0.00', vlRec + vlDesp);
 
   finally
     lanc.DisposeOf;
@@ -158,7 +158,10 @@ begin
     frmLancamentosCad.modo := 'I';
 
   frmLancamentosCad.id_lanc := id;
-  frmLancamentosCad.Show;
+  frmLancamentosCad.ShowModal(procedure(ModalResult: TModalResult)
+    begin
+      ListarLancamentos;
+    end);
 end;
 
 procedure TfrmLancamentos.FormShow(Sender: TObject);
