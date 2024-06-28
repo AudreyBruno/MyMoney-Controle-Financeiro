@@ -10,12 +10,12 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, classLancamento, uFormat;
+  FireDAC.Comp.Client, classLancamento, uFormat, FMX.DialogService;
 
 type
   TfrmLancamentosCad = class(TForm)
     rectDelete: TRectangle;
-    Image1: TImage;
+    imgDelete: TImage;
     Layout1: TLayout;
     Label1: TLabel;
     imgBack: TImage;
@@ -47,6 +47,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure imgSaveClick(Sender: TObject);
     procedure edtValorTyping(Sender: TObject);
+    procedure imgDeleteClick(Sender: TObject);
   private
     procedure ListaCategorias;
     function TrataValor(value: string): Double;
@@ -168,6 +169,39 @@ end;
 procedure TfrmLancamentosCad.imgBackClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmLancamentosCad.imgDeleteClick(Sender: TObject);
+var
+  lanc: TLancamento;
+  erro: string;
+begin
+  TDialogService.MessageDialog('Confirma exclusão da categoria?',
+                               TMsgDlgType.mtConfirmation,
+                               [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo],
+                               TMsgDlgBtn.mbNo,
+                               0,
+  procedure(const AResult: TModalResult)
+  var
+    erro: string;
+  begin
+    if AResult = mrYes then
+      begin
+        try
+          lanc := TLancamento.Create(DMPrincipal.FDConn);
+          lanc.ID_LANCAMENTO := id_lanc;
+
+          if not lanc.Excluir(erro) then
+            begin
+              ShowMessage(erro);
+              Exit;
+            end;
+          Close;
+        finally
+          lanc.DisposeOf;
+        end;
+      end;
+  end);
 end;
 
 procedure TfrmLancamentosCad.imgHojeClick(Sender: TObject);
