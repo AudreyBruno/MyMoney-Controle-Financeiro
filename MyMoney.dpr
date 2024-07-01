@@ -14,7 +14,8 @@ uses
   classCategoria in 'Classes\classCategoria.pas',
   uListViewLoader in 'Units\uListViewLoader.pas',
   classLancamento in 'Classes\classLancamento.pas',
-  uFormat in 'Units\uFormat.pas';
+  uFormat in 'Units\uFormat.pas',
+  classLogin in 'Classes\classLogin.pas';
 
 {$R *.res}
 

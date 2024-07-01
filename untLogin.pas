@@ -12,7 +12,8 @@ uses
     FMX.VirtualKeyboard, FMX.Platform,
   {$ENDIF}
 
-  FMX.StdActns, untPrincipal;
+  FMX.StdActns, untPrincipal, classLogin, DataModule.Principal,
+  FireDAC.Comp.Client;
 
 type
   TfrmLogin = class(TForm)
@@ -78,6 +79,7 @@ type
     circleSelectFoto: TCircle;
     ActLibrary: TTakePhotoFromLibraryAction;
     ActCamera: TTakePhotoFromCameraAction;
+    TimerLogin: TTimer;
     procedure lblBtnLoginCriarContaClick(Sender: TObject);
     procedure lblBtnCreateAccountLoginClick(Sender: TObject);
     procedure roundRectAccountBtnNextClick(Sender: TObject);
@@ -95,10 +97,13 @@ type
       Shift: TShiftState);
     procedure roundRectBtnLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure roundRectBtnCreateAccountClick(Sender: TObject);
+    procedure TimerLoginTimer(Sender: TObject);
   private
     { Private declarations }
     permission: T99Permissions;
     procedure permissionError(Sender: TObject);
+    procedure OpenForm;
   public
     { Public declarations }
   end;
@@ -109,6 +114,16 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TfrmLogin.OpenForm;
+begin
+  if NOT Assigned(frmPrincipal) then
+    Application.CreateForm(TfrmPrincipal, frmPrincipal);
+
+  Application.MainForm := frmPrincipal;
+  frmPrincipal.Show;
+  Close;
+end;
 
 procedure TfrmLogin.permissionError(Sender: TObject);
 begin
@@ -191,6 +206,7 @@ end;
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
   tabCtrlLogin.ActiveTab := tabLogin;
+  TimerLogin.Enabled := True;
 end;
 
 procedure TfrmLogin.imgBackCreateAccountClick(Sender: TObject);
@@ -228,14 +244,85 @@ begin
   ActFoto.Execute;
 end;
 
-procedure TfrmLogin.roundRectBtnLoginClick(Sender: TObject);
+procedure TfrmLogin.roundRectBtnCreateAccountClick(Sender: TObject);
+var
+  login: TLogin;
+  erro: string;
 begin
-  if NOT Assigned(frmPrincipal) then
-    Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  try
+    login := TLogin.Create(DMPrincipal.FDConn);
+    login.NOME := edtAccountName.Text;
+    login.EMAIL := edtAccountEmail.Text;
+    login.SENHA := edtAccountPassword.Text;
+    login.IND_LOGIN := 'S';
+    login.FOTO := circleSelectFoto.Fill.Bitmap.Bitmap;
 
-  Application.MainForm := frmPrincipal;
-  frmPrincipal.Show;
-  Close;
+    if NOT login.Excluir(erro) then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+
+    if NOT login.Inserir(erro) then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+  finally
+    login.DisposeOf;
+  end;
+
+  OpenForm;
+end;
+
+procedure TfrmLogin.roundRectBtnLoginClick(Sender: TObject);
+var
+  login: TLogin;
+  erro: string;
+begin
+  try
+    login := TLogin.Create(DMPrincipal.FDConn);
+    login.EMAIL := edtLoginEmail.Text;
+    login.SENHA := edtLoginPassword.Text;
+
+    if NOT login.Login(erro) then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+  finally
+    login.DisposeOf;
+  end;
+
+  OpenForm;
+end;
+
+procedure TfrmLogin.TimerLoginTimer(Sender: TObject);
+var
+  login: TLogin;
+  erro: string;
+
+  qry : TFDQuery;
+begin
+  TimerLogin.Enabled := False;
+
+  tabCtrlLogin.ActiveTab := tabLogin;
+
+  try
+    login := TLogin.Create(DMPrincipal.FDConn);
+    qry := TFDQuery.Create(nil);
+
+    qry := login.ListarUsuario(erro);
+
+    if qry.FieldByName('IND_LOGIN').AsString <> 'S' then
+      Exit;
+
+  finally
+    qry.DisposeOf;
+    login.DisposeOf;
+  end;
+
+  OpenForm;
 end;
 
 end.

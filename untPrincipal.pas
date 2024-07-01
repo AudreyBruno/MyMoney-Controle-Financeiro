@@ -8,7 +8,8 @@ uses
   FMX.Layouts, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
   untLancamentos, untCategorias, FMX.Ani, uListViewLoader, classLancamento,
-  DataModule.Principal, FireDAC.Comp.Client, Data.DB, untLancamentosCad;
+  DataModule.Principal, FireDAC.Comp.Client, Data.DB, untLancamentosCad,
+  classLogin;
 
 type
   TfrmPrincipal = class(TForm)
@@ -222,7 +223,22 @@ begin
 end;
 
 procedure TfrmPrincipal.lyMenuLogoffClick(Sender: TObject);
+var
+  login: TLogin;
+  erro: string;
 begin
+  try
+    login := TLogin.Create(DMPrincipal.FDConn);
+
+    if NOT login.Logout(erro) then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+  finally
+    login.DisposeOf;
+  end;
+
   if NOT Assigned(frmLogin) then
       Application.CreateForm(TfrmLogin, frmLogin);
 
