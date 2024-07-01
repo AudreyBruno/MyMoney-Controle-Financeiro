@@ -3035,6 +3035,7 @@ object frmPrincipal: TfrmPrincipal
         Size.Width = 35.000000000000000000
         Size.Height = 42.000000000000000000
         Size.PlatformDefault = False
+        Visible = False
       end
     end
     object Layout2: TLayout
@@ -3057,7 +3058,7 @@ object frmPrincipal: TfrmPrincipal
         Text = 'SALDO ATUAL'
         TabOrder = 0
       end
-      object Label3: TLabel
+      object lblSaldo: TLabel
         Align = Center
         StyledSettings = [Family, Style]
         Margins.Top = 30.000000000000000000
@@ -3168,7 +3169,7 @@ object frmPrincipal: TfrmPrincipal
             Size.Height = 47.000000000000000000
             Size.PlatformDefault = False
           end
-          object Label4: TLabel
+          object lblReceitas: TLabel
             StyledSettings = [Family]
             Position.X = 48.000000000000000000
             Position.Y = 10.000000000000000000
@@ -3279,7 +3280,7 @@ object frmPrincipal: TfrmPrincipal
             Size.Height = 47.000000000000000000
             Size.PlatformDefault = False
           end
-          object Label6: TLabel
+          object lblDespesas: TLabel
             StyledSettings = [Family]
             Position.X = 48.000000000000000000
             Position.Y = 10.000000000000000000

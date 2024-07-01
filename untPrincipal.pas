@@ -9,7 +9,7 @@ uses
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
   untLancamentos, untCategorias, FMX.Ani, uListViewLoader, classLancamento,
   DataModule.Principal, FireDAC.Comp.Client, Data.DB, untLancamentosCad,
-  classLogin;
+  classLogin, System.DateUtils;
 
 type
   TfrmPrincipal = class(TForm)
@@ -20,16 +20,16 @@ type
     Label1: TLabel;
     Layout2: TLayout;
     Label2: TLabel;
-    Label3: TLabel;
+    lblSaldo: TLabel;
     Layout3: TLayout;
     Layout4: TLayout;
     Layout5: TLayout;
     Layout6: TLayout;
     Image1: TImage;
     Image2: TImage;
-    Label4: TLabel;
+    lblReceitas: TLabel;
     Label5: TLabel;
-    Label6: TLabel;
+    lblDespesas: TLabel;
     Label7: TLabel;
     rectPrincipal: TRectangle;
     Layout7: TLayout;
@@ -65,6 +65,8 @@ type
     procedure OpenMenu(ind: Boolean);
     procedure ListarLancamentos;
     procedure AbrirLançamentos(id: integer);
+    procedure CalculaSaldo;
+    procedure LoadIcon;
     { Private declarations }
   public
     { Public declarations }
@@ -147,7 +149,87 @@ begin
       end;
 
   finally
+    qry.DisposeOf;
     lanc.DisposeOf;
+  end;
+
+  CalculaSaldo;
+end;
+
+procedure TfrmPrincipal.CalculaSaldo;
+var
+  lanc: TLancamento;
+  qry: TFDQuery;
+  erro: string;
+  i: integer;
+  vlRec, vlDesp: double;
+begin
+  vlRec := 0;
+  vlDesp := 0;
+
+  try
+    lanc := TLancamento.Create(DMPrincipal.FDConn);
+    lanc.DATA_DE := FormatDateTime('YYYY-MM-DD', StartOfTheMonth(Date));
+    lanc.DATA_ATE := FormatDateTime('YYYY-MM-DD', EndOfTheMonth(Date));
+
+    qry := lanc.ListarLancamento(0, erro);
+
+    if erro <> '' then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+
+    qry.First;
+    for i := 0 to qry.RecordCount - 1 do
+      begin
+        if qry.FieldByName('VALOR').AsFloat > 0 then
+          vlRec := vlRec + qry.FieldByName('VALOR').AsFloat
+        else
+          vlDesp := vlDesp + qry.FieldByName('VALOR').AsFloat;
+
+        qry.Next;
+      end;
+
+    lblReceitas.Text := FormatFloat('#,##0.00', vlRec);
+    lblDespesas.Text := FormatFloat('#,##0.00', vlDesp);
+    lblSaldo.Text := FormatFloat('#,##0.00', vlRec + vlDesp);
+  finally
+    qry.DisposeOf;
+    lanc.DisposeOf;
+  end;
+end;
+
+procedure TfrmPrincipal.LoadIcon;
+var
+  login: TLogin;
+  qry: TFDQuery;
+  erro: string;
+  foto: TStream;
+begin
+  try
+    login := TLogin.Create(DMPrincipal.FDConn);
+    qry := login.ListarUsuario(erro);
+
+    if erro <> '' then
+      begin
+        ShowMessage(erro);
+        Exit;
+      end;
+
+
+    if qry.FieldByName('FOTO').AsString <> '' then
+      foto := qry.CreateBlobStream(qry.FieldByName('FOTO'), TBlobStreamMode.bmRead)
+    else
+      foto := nil;
+
+    if foto <> nil then
+      circleAvatar.Fill.Bitmap.Bitmap.LoadFromStream(foto);
+
+  finally
+    foto.DisposeOf;
+    qry.DisposeOf;
+    login.DisposeOf;
   end;
 end;
 
@@ -173,6 +255,7 @@ end;
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin
   ListarLancamentos;
+  LoadIcon;
 end;
 
 procedure TfrmPrincipal.imgAddLancClick(Sender: TObject);
@@ -195,7 +278,10 @@ begin
   if NOT Assigned(frmLancamentos) then
     Application.CreateForm(TfrmLancamentos, frmLancamentos);
 
-  frmLancamentos.Show;
+  frmLancamentos.ShowModal(procedure(ModalResult: TModalResult)
+    begin
+      ListarLancamentos;
+    end);
 end;
 
 procedure TfrmPrincipal.lvLancamentosItemClick(const Sender: TObject;

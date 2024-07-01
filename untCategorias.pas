@@ -69,6 +69,8 @@ begin
         TListViewLoader.AddCategoriaLv(lvCategorias,
                                        qry.FieldByName('ID_CATEGORIA').AsInteger,
                                        qry.FieldByName('DESCRICAO').AsString,
+                                       'N',
+                                       0,
                                        icone);
 
         if icone <> nil then

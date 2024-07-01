@@ -15,7 +15,8 @@ uses
   uListViewLoader in 'Units\uListViewLoader.pas',
   classLancamento in 'Classes\classLancamento.pas',
   uFormat in 'Units\uFormat.pas',
-  classLogin in 'Classes\classLogin.pas';
+  classLogin in 'Classes\classLogin.pas',
+  untLancamentosResumo in 'untLancamentosResumo.pas' {frmLancamentoResumo};
 
 {$R *.res}
 
@@ -23,5 +24,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TDMPrincipal, DMPrincipal);
   Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmLancamentoResumo, frmLancamentoResumo);
   Application.Run;
 end.

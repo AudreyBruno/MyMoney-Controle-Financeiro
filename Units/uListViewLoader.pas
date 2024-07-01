@@ -13,8 +13,11 @@ type
     class procedure AddLancamentosLv(listview: TListView;
       id_lancamento: Integer; descricao, categoria: string; valor: double;
       foto: TStream; dt: TDateTime); static;
-    class procedure AddCategoriaLv(listview: TListView; id_categoria: Integer;
-      descricao: string; foto: TStream);
+    class procedure AddCategoriaLv(listview: TListView;
+                                               id_categoria: Integer;
+                                               descricao, resumo: string;
+                                               valor: double;
+                                               foto: TStream);
 end;
 
 implementation
@@ -61,7 +64,8 @@ end;
 
 class procedure TListViewLoader.AddCategoriaLv(listview: TListView;
                                                id_categoria: Integer;
-                                               descricao: string;
+                                               descricao, resumo: string;
+                                               valor: double;
                                                foto: TStream);
 var
   txt: TListItemText;
@@ -75,6 +79,12 @@ begin
 
       txt := TListItemText(Objects.FindDrawable('txtDescricao'));
       txt.Text := descricao;
+
+      if resumo = 'S' then
+        begin
+          txt := TListItemText(Objects.FindDrawable('txtValor'));
+          txt.Text := FormatFloat('#,##0.00', valor);
+        end;
 
       img := TListItemImage(Objects.FindDrawable('imgIcon'));
 

@@ -71,4 +71,6 @@ modules/
 *.res
 
 Win32/
+Win64/
+Android/
 Android64/

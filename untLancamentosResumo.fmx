@@ -1,0 +1,158 @@
+object frmLancamentoResumo: TfrmLancamentoResumo
+  Left = 0
+  Top = 0
+  Caption = 'Resumo'
+  ClientHeight = 550
+  ClientWidth = 350
+  Fill.Kind = Solid
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnClose = FormClose
+  OnShow = FormShow
+  DesignerMasterStyle = 0
+  object Layout1: TLayout
+    Align = Top
+    Size.Width = 350.000000000000000000
+    Size.Height = 45.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object Label1: TLabel
+      Align = Contents
+      StyledSettings = [Family, Style]
+      Size.Width = 350.000000000000000000
+      Size.Height = 45.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.FontColor = xFF9BA2B4
+      TextSettings.HorzAlign = Center
+      Text = 'Resumo'
+      TabOrder = 1
+    end
+    object imgBack: TImage
+      MultiResBitmap.Height = 64
+      MultiResBitmap.Width = 64
+      MultiResBitmap = <
+        item
+          Width = 64
+          Height = 64
+          PNG = {
+            89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
+            DE000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+            02E449444154785EEDDA4D6B13411807F06766B25D7312DFBE82375F0F128F4D
+            10A4B5F603A83512AD3D7911AADF4004C56BA915AD7AD7AA15C5A4E0C9B3AF88
+            A077DF119474B3D919F3D4277BE87693DD64C1C9647E97CC3E84D2FFBFBB93CD
+            52B02CCBB22CCBB22C6B28317ACDD4FCE2F24EC6E455F058C9979E74F22355A5
+            F8ECF4C9F10FF4166D645EC0FCCD477B4140B5F583B7D1688D07C18F9C740ECC
+            94C73ED2480B9C5E3311171EB920B6722E2FD1A136322BA053F8360FE0302DB5
+            91490149C22351F7323DE3B2D0F72F84E11B22A8750B8F44DE794A4B6DF45540
+            3B3C5EDF348AD590F05906CE793AD446EB0FD79B34E1A1A1BE70578C564E8CBD
+            A389367A2AC094F028F525B0B0F8789F29E151AA0230FC2AF3AB49C3AB9C2CEA
+            1C1E25BE047A093F5D9E7C4B136D097AED284DF82634BF320603111E753D03E6
+            EE3CD8DF54EA59D2F042B2D141098F3A1680E145A3510567D3161AC5C2F00E88
+            E2E9A98937341A08B1050C4378B4610169C2EBCEAF7B7F84EBAE8092B3674F1D
+            7D4FE350A4007C98D160CD178976FB41A2E42F29A1B0BE84C87D8062EA9A71E1
+            11E39B39E797E9281429807B304A4BF34828D22A1429A0EEFA5D3F1A4D122920
+            0FCE735A1A4731A8D23214DD03143BA700BED3A139FCD59FC0D8053A0A450AC0
+            47D70254C9981202F8AD24DC57B97C61A3C7F2B1D7FB8DDB0FF704C0123DEA5A
+            BBFFE74E69E6F8F86B1A0D8C8E1BDE3094D075C737BD84C81EB05E656AE22593
+            4131C99E9083DC0E25FDDADCDDE55D34D25ED733A0EDFAADA5DD8A8B15D3CE84
+            C40520134B485500C21240891A08D84EA358835042EA02904925F4540032A584
+            9E0B40A94B9023078DFAFF8033E5C957C08252EB76F31B8D62E147240779850E
+            B5D15701084B081C564C5242D3F30ED1521B7D1780F0DA4E52429077252DB591
+            49012849092EC0135A6A23B30250BB04DCF06814C25B6921E0221D6A23D30210
+            9680BB7D2BF2123E92C6EFE3ADF13D0641A172ECC8A77FEFB22CCBB22CCBB22C
+            CBFA9F00FE027B8F5E991439B05B0000000049454E44AE426082}
+          FileName = 
+            'C:\Audrey\Projetos\Estudo\MyMoney\MyMoney-Controle-Financeiro\Im' +
+            'ages\back.png'
+        end>
+      Align = Left
+      Margins.Left = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Size.Width = 40.000000000000000000
+      Size.Height = 45.000000000000000000
+      Size.PlatformDefault = False
+      OnClick = imgBackClick
+    end
+  end
+  object Layout2: TLayout
+    Align = Top
+    Position.Y = 45.000000000000000000
+    Size.Width = 350.000000000000000000
+    Size.Height = 45.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    object RoundRect1: TRoundRect
+      Align = Center
+      Fill.Color = xFF5769DF
+      Size.Width = 175.000000000000000000
+      Size.Height = 35.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      object lblMes: TLabel
+        Align = Client
+        StyledSettings = [Family, Style]
+        Size.Width = 175.000000000000000000
+        Size.Height = 35.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = claWhite
+        TextSettings.HorzAlign = Center
+        Text = 'Fevereiro'
+        TabOrder = 0
+      end
+    end
+  end
+  object lvResumo: TListView
+    ItemAppearanceClassName = 'TDynamicAppearance'
+    ItemEditAppearanceClassName = 'TDynamicAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    ItemSpaces.Left = 0.000000000000000000
+    ItemSpaces.Right = 0.000000000000000000
+    Align = Client
+    Size.Width = 350.000000000000000000
+    Size.Height = 460.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    ItemAppearance.ItemHeight = 55
+    ItemAppearanceObjects.ItemObjects.ObjectsCollection = <
+      item
+        AppearanceObjectName = 'imgIcon'
+        AppearanceClassName = 'TImageObjectAppearance'
+        Appearance.Width = 38.000000000000000000
+        Appearance.Height = 35.000000000000000000
+        Appearance.PlaceOffset.X = 5.000000000000000000
+        Appearance.PlaceOffset.Y = 10.000000000000000000
+      end
+      item
+        AppearanceObjectName = 'txtDescricao'
+        AppearanceClassName = 'TTextObjectAppearance'
+        Appearance.Font.Size = 14.000000000000000000
+        Appearance.TextAlign = Leading
+        Appearance.TextColor = xFFBEBEBE
+        Appearance.Width = 200.000000000000000000
+        Appearance.Height = 20.000000000000000000
+        Appearance.PlaceOffset.X = 55.000000000000000000
+        Appearance.PlaceOffset.Y = 20.000000000000000000
+      end
+      item
+        AppearanceObjectName = 'txtValor'
+        AppearanceClassName = 'TTextObjectAppearance'
+        Appearance.Font.Size = 14.000000000000000000
+        Appearance.TextAlign = Trailing
+        Appearance.TextColor = xFFBEBEBE
+        Appearance.Width = 81.000000000000000000
+        Appearance.Height = 20.000000000000000000
+        Appearance.Align = Trailing
+        Appearance.PlaceOffset.X = -5.000000000000000000
+        Appearance.PlaceOffset.Y = 20.000000000000000000
+      end>
+    ItemAppearanceObjects.ItemEditObjects.ObjectsCollection = <
+      item
+        AppearanceObjectName = 'Text1'
+        AppearanceClassName = 'TTextObjectAppearance'
+      end>
+  end
+end

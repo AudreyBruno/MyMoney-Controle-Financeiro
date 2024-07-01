@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
   FMX.Objects, FMX.Controls.Presentation, FMX.StdCtrls, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  uListViewLoader, classLancamento, FireDAC.Comp.Client, DataModule.Principal,
+  uListViewLoader, classLancamento, FireDAC.Comp.Client,
   Data.DB, DateUtils;
 
 type
@@ -20,7 +20,7 @@ type
     imgNext: TImage;
     RoundRect1: TRoundRect;
     lblMes: TLabel;
-    Rectangle1: TRectangle;
+    rectResumo: TRectangle;
     imgAdd: TImage;
     Layout3: TLayout;
     lblRec: TLabel;
@@ -30,6 +30,7 @@ type
     lblSaldo: TLabel;
     Label7: TLabel;
     lvLancamentos: TListView;
+    imgChart: TImage;
     procedure imgBackClick(Sender: TObject);
     procedure lvLancamentosUpdateObjects(const Sender: TObject;
       const AItem: TListViewItem);
@@ -39,6 +40,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure imgPrevClick(Sender: TObject);
     procedure imgNextClick(Sender: TObject);
+    procedure imgChartClick(Sender: TObject);
   private
     dt_filtro : TDate;
 
@@ -56,7 +58,7 @@ var
 
 implementation
 
-uses untPrincipal, untLancamentosCad;
+uses untPrincipal, untLancamentosCad, untLancamentosResumo, DataModule.Principal;
 
 {$R *.fmx}
 
@@ -178,6 +180,16 @@ end;
 procedure TfrmLancamentos.imgBackClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmLancamentos.imgChartClick(Sender: TObject);
+begin
+  if NOT Assigned(frmLancamentoResumo) then
+      Application.CreateForm(TfrmLancamentoResumo, frmLancamentoResumo);
+
+  frmLancamentoResumo.lblMes.Text := lblMes.Text;
+  frmLancamentoResumo.dt_filtro := dt_filtro;
+  frmLancamentoResumo.Show;
 end;
 
 procedure TfrmLancamentos.imgNextClick(Sender: TObject);
